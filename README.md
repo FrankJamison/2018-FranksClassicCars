@@ -1,4 +1,4 @@
-# 2018 RSS Feed Portfolio
+# 2018 Frank's Classic Cars
 
 This project is a PHP-based web application for managing and displaying product and customer data, with integrated RSS feed functionality. It was originally developed as a portfolio project for UC Davis Web512 coursework.
 
