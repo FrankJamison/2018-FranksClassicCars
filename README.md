@@ -1,64 +1,79 @@
 # 2018 Frank's Classic Cars
 
-This project is a PHP-based web application for managing and displaying product and customer data, with integrated RSS feed functionality. It was originally developed as a portfolio project for UC Davis Web512 coursework.
+PHP + MySQL sample application for browsing classic car inventory, generating RSS feeds by product line, and providing a simple employee-only area for customer/inventory operations.
 
-## Features
+This repo is primarily intended as a portfolio/learning project.
 
-- Customer and employee management
-- Product catalog and inventory
-- RSS feed generation for product updates
-- User authentication and account creation
-- Data visualization with charts
-- Modular includes for easy code maintenance
-- MySQL database integration
+## What’s Included
 
-## Project Structure
+- Public pages (home, product browsing, RSS feeds)
+- Employee account creation + login
+- Member-only pages for inventory and customer/credit-limit workflows
+- MySQL-backed data access
+- Server-side chart generation (requires PHP GD)
 
-- `index.php` — Main landing page
-- `autorss.php` — Automatic RSS feed generator
-- `createaccount.php` — User registration
-- `login.php` — User login
-- `product.php` — Product catalog and details
-- `members/` — Member-only pages (add customer, inventory, etc.)
-- `includes/` — Reusable PHP includes (header, footer, session, variables)
-- `css/style.css` — Main stylesheet
-- `charts/` — Data visualization scripts
-- `images/` — Project images
-- `uc_davis_web512.sql` — MySQL database schema and sample data
+## Key Pages & Endpoints
 
-## Database
-
-The application uses a MySQL database. Connection variables are set in `includes/variables.inc.php`:
-
-```php
-$host = "localhost";
-$web_user = "rss_feed_user";
-$pwd = "lvg!(VQ8a47TXssh";
-$dbname = "rss_feed";
-```
-
-Import the provided `uc_davis_web512.sql` file to set up the database schema and sample data.
-
-## Setup Instructions
-
-1. Clone this repository.
-2. Import `uc_davis_web512.sql` into your MySQL server.
-3. Update database credentials in `includes/variables.inc.php` if needed.
-4. Ensure your web server supports PHP and has access to the MySQL database.
-5. Access the site via your local server (e.g., http://2018rssfeed.localhost/).
+- Home: [index.php](index.php)
+- Product catalog/details: [product.php](product.php)
+- Create employee account: [createaccount.php](createaccount.php)
+- Employee login: [login.php](login.php)
+- RSS feed generator: [autorss.php](autorss.php)
+	- Uses a `pl` query parameter for product line selection (examples: `classic`, `vintage`, `motorcycle`).
+- Member area home: [members/index.php](members/index.php)
+- Member tools:
+	- Add customer: [members/addcustomer.php](members/addcustomer.php)
+	- Credit limits + chart: [members/creditlimits.php](members/creditlimits.php)
+	- Inventory listing: [members/inventory.php](members/inventory.php)
+	- Logout: [members/logout.php](members/logout.php)
 
 ## Requirements
 
-- PHP 5.4+
+- PHP 5.4+ (newer versions generally work, but this codebase uses older-style patterns)
 - MySQL 5.6+
-- Web server (Apache, Nginx, etc.)
+- PHP extensions:
+	- `mysqli`
+	- `gd` (needed for server-side chart image generation)
+- A web server capable of running PHP (IIS, Apache, Nginx, etc.)
 
-## License
+## Database Setup
 
-This project is for educational and portfolio purposes. Please contact the author for reuse or distribution.
+1. Create a MySQL database (name is configurable).
+2. Import the schema/data dump: [uc_davis_web512.sql](uc_davis_web512.sql)
+3. Create a database user with appropriate permissions for the imported schema.
 
----
+## Configuration
 
-**Author:** Frank Jamison
+Database connection settings live in [includes/variables.inc.php](includes/variables.inc.php). Update these values for your environment:
 
-For questions or support, contact frank@frankjamison.com
+```php
+$host = "<db-host>";
+$web_user = "<db-username>";
+$pwd = "<db-password>";
+$dbname = "<db-name>";
+```
+
+## Running Locally
+
+Use any PHP-capable web server pointed at the repository root.
+
+If you prefer PHP’s built-in server (useful for quick smoke tests), run this from the project root:
+
+```bash
+php -S 127.0.0.1:8000
+```
+
+Then open `http://127.0.0.1:8000/` in your browser.
+
+## RSS Feeds
+
+The RSS generator is implemented in [autorss.php](autorss.php). It selects items by product line using the `pl` query parameter. The output can be styled/transformed with [rssfeed.xsl](rssfeed.xsl).
+
+## Charts / Credit Limits
+
+The credit-limit chart is generated server-side using PHP GD functions (see the graph helpers in [includes/functions.inc.php](includes/functions.inc.php)). If chart images don’t render, verify the `gd` extension is enabled in your PHP installation.
+
+## Notes / Caveats
+
+- Error output is suppressed in [includes/functions.inc.php](includes/functions.inc.php), which can make debugging harder. During local development, you may temporarily enable error reporting.
+- This is a teaching/portfolio codebase and is not hardened for production use.
